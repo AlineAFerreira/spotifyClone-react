@@ -51,7 +51,7 @@ export const Results = styled.div`
         cursor: pointer;
         justify-self: center;
 
-        &:hover .box-img {
+        &:hover .box-img img {
             transform: scale(1.1);
         }
 
@@ -73,7 +73,8 @@ export const Results = styled.div`
             margin: 0 auto 15px;
 
             img {
-                transition: all .5s;
+                width: 100%;
+                transition: all .2s;
             }
         }
 

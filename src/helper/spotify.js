@@ -1,12 +1,15 @@
 import axios from 'axios';
-var querystring = require('querystring');
+const querystring = require('querystring');
 
 const client_id = '95f2169faa5945e88ad679425b129b43'; // Your client id
 const client_secret = 'c2236aa86d65448c960a3ad2d554c648'; // Your secret
 const redirect_uri = 'http://localhost:8080/callback'; // Your redirect uri
 
 export const spotifyHelper = {
-    authorization: () => {
+    TOKEN_DATA_KEY: 'tokenData',    
+
+    authorization() {
+        console.log('teste')
         const scope = 'user-read-private user-read-email';
         window.location.href = 'https://accounts.spotify.com/authorize?' +
           querystring.stringify({
@@ -16,13 +19,9 @@ export const spotifyHelper = {
             redirect_uri: redirect_uri
           });
     },
-    getToken: () => {
+    getToken() {
         if (window.location.search.indexOf('code=') == -1) return;
         const code = window.location.search.split('&')[0].split('=')[1];
-
-        const key = btoa('code');
-        const value = btoa(code)
-        localStorage.setItem(key, value);
         
         const url = 'https://accounts.spotify.com/api/token';
         const requestBody = {
@@ -40,12 +39,74 @@ export const spotifyHelper = {
 
         axios.post(url, querystring.stringify(requestBody), config)
         .then(response =>{
-            console.log(response.data);
+            const tokenData = {
+                access_token: response.data.access_token,
+                refresh_token: response.data.refresh_token
+            };
+            localStorage.setItem(btoa(this.TOKEN_DATA_KEY), btoa(JSON.stringify(tokenData)));
+            window.location.href = window.location.origin + '/Home';
         })
     },
-    storeCode: (code)=> {
-        const key = btoa('code');
-        const value = btoa(code)
-        localStorage.setItem(key, value);
+    refreshToken() {
+        const tokenData = JSON.parse(window.atob(localStorage.getItem(window.btoa(this.TOKEN_DATA_KEY))));
+        const refreshToken = tokenData.refresh_token;
+        
+        console.log('refresh', refreshToken)
+
+        const url = 'https://accounts.spotify.com/api/token';
+        const requestBody = {
+            grant_type: 'refresh_token',
+            refresh_token: refreshToken
+        }
+        const config = {
+            headers: {
+              'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')),
+              'Accept': 'application/json',
+              'Content-Type':'application/x-www-form-urlencoded'
+            }
+        };
+
+        axios.post(url, querystring.stringify(requestBody), config)
+        .then(response =>{
+            const tokenData = {
+                access_token: response.data.access_token,
+                refresh_token: refreshToken
+            };
+            localStorage.setItem(btoa(this.TOKEN_DATA_KEY), btoa(JSON.stringify(tokenData)));
+            window.location.href = window.location.origin + '/Home';
+        })
+    },
+    getUserData() {
+        const token = JSON.parse(window.atob(localStorage.getItem(window.btoa(this.TOKEN_DATA_KEY))));
+        const AuthStr = 'Bearer ' + token.access_token;
+
+        return axios.get('https://api.spotify.com/v1/me', { headers: { Authorization: AuthStr } })
+        .then(res => { 
+            return res.data.display_name 
+        })
+        .catch(err => {
+            if(err.response.status === 401) {
+                this.refreshToken();
+            }
+        })
+    },
+    getUserPlaylists() {
+        const token = JSON.parse(window.atob(localStorage.getItem(window.btoa(this.TOKEN_DATA_KEY))));
+        const AuthStr = 'Bearer ' + token.access_token;
+
+        return axios.get('https://api.spotify.com/v1/me/playlists', { headers: { Authorization: AuthStr } })
+        .then(res => { 
+            return res.data.items; 
+        });
+    },
+    getPlaylistItem(id) {
+        console.log('playlist id', id)
+        const token = JSON.parse(window.atob(localStorage.getItem(window.btoa(this.TOKEN_DATA_KEY))));
+        const AuthStr = 'Bearer ' + token.access_token;
+
+        return axios.get(`https://api.spotify.com/v1/playlists/${id}/tracks`, { headers: { Authorization: AuthStr } })
+        .then(res => { 
+            console.log(res.data); 
+        });
     }
 } 

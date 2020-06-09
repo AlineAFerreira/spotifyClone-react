@@ -1,10 +1,10 @@
 import React from 'react';
+import { spotifyHelper } from './helper/spotify';
 import GlobalStyle, {Container} from './styles';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Album from './pages/Album';
-import Callback from './pages/Callback';
-import {spotifyHelper} from './helper/spotify'; 
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,36 +13,31 @@ import {
 } from "react-router-dom";
 
 
+
 class App extends React.Component {
   componentDidMount(){
     spotifyHelper.getToken();
-    
   }
 
   render() {
     return (
       <>
         <GlobalStyle />
-        <Container>
-          <button onClick={spotifyHelper.authorization}>Login</button>
+        <Container>          
           <Router>
             <Link to="/">Login</Link>
             <Link to="/Home">Home</Link>
             <Link to="/Album">Album</Link>
-            {/* <Link to="/Callback">Callback</Link> */}
             <Switch>
-              {/* <Route path="/Callback">
-                <Callback />
-              </Route> */}
-              <Route path="/Album">
-                <Album />
-              </Route>
-              <Route path="/Home">
-                <Home />
-              </Route>
-              <Route path="/">
+              <Route path="/" exact >
                 <Login />
               </Route>  
+              <Route path="/Home" exact >
+                <Home />
+              </Route>
+              <Route path="/Album" exact >
+                <Album />
+              </Route>
             </Switch>
           </Router>
         </Container>

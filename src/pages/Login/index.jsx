@@ -1,10 +1,13 @@
 import React from 'react';
-
-// import { Container } from './styles';
+import { spotifyHelper } from './../../helper/spotify'; 
+import { Container} from './styles';
 
 const Login = () => {
   return (
+    <div>
       <h1>Login</h1>
+      <button onClick={spotifyHelper.authorization}>Login</button>
+    </div>
   );
 }
 
