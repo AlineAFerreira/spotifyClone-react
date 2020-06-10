@@ -9,6 +9,7 @@ export default createGlobalStyle`
 
   body {    
     font-family: 'Roboto', sans-serif;
+    font-size: 14px;
     color: #fafafa;
     background-color: #161616;
   }

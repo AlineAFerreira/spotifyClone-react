@@ -1,21 +1,17 @@
 import React, {useState, useEffect} from 'react';
 import LinesEllipsis from 'react-lines-ellipsis';
 import { spotifyHelper } from '../../helper/spotify';
-import { Container, Label, InputText, TextTerm, Results} from './styles';
+import { Container, Label, TextTerm, Results} from './styles';
 
 const Home = () => {
   const [term, setTerm] = useState('');
-  const [userName, setUserName] = useState();
   const [userPlaylists, setUserPlaylists] = useState({});
   
   useEffect(()=>{
-    spotifyHelper.getUserData()
-    .then(res => setUserName(res));
-
     spotifyHelper.getUserPlaylists()
     .then(res => {
       setUserPlaylists(res)
-    })
+    });
   },[])
 
   const listPlaylists = () => {
@@ -43,9 +39,6 @@ const Home = () => {
   
   return (
     <Container>
-      <h1>Olá, {userName}</h1>
-      <Label>Busque por artistas, álbuns ou músicas</Label>
-      <InputText placeholder="Comece a escrever..." onChange={(e)=> {setTerm(e.target.value)}} />
       <TextTerm className={term != '' ? 'show' : ''}>Resultados encontrados para "{term}"</TextTerm>
       <Results>
         {listPlaylists()}

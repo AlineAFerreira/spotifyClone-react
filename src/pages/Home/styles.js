@@ -9,26 +9,8 @@ export const Label = styled.label`
     color: #999;
 `;
 
-export const InputText = styled.input`
-    width: 100%;
-    font-size: 46px;
-    color: #fff;
-    background-color: transparent;
-    border-width: 0 0 1px 0;
-    border-bottom: 2px solid #424242;
-    padding: 0 10px;
-    margin: 15px 0 20px;
-
-    &::-webkit-input-placeholder {
-        color: #424242;
-    }
-
-    &:focus {
-        outline: none;
-    }
-`;
-
 export const TextTerm = styled.h2`
+    margin-top: 50px;
     margin-bottom: 20px;
     opacity: 0;
     transition: opacity .5s;
