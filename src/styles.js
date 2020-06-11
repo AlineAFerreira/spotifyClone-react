@@ -18,6 +18,7 @@ export default createGlobalStyle`
 export const Container = styled.div`
   margin: 0 auto;
   padding: 30px 15px;
+  position: relative;
 
   @media (min-width: 768px) {
       width: 750px;

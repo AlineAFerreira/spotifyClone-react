@@ -97,16 +97,32 @@ export const spotifyHelper = {
         return axios.get('https://api.spotify.com/v1/me/playlists', { headers: { Authorization: AuthStr } })
         .then(res => { 
             return res.data.items; 
-        });
+        })
+        .catch(err => {
+            if(err.response.status === 401) {
+                this.refreshToken();
+            }
+        })
     },
     getPlaylistItem(id) {
         console.log('playlist id', id)
         const token = JSON.parse(window.atob(localStorage.getItem(window.btoa(this.TOKEN_DATA_KEY))));
         const AuthStr = 'Bearer ' + token.access_token;
 
-        return axios.get(`https://api.spotify.com/v1/playlists/${id}/tracks`, { headers: { Authorization: AuthStr } })
+        return axios.get(`https://api.spotify.com/v1/playlists/${id}`, { headers: { Authorization: AuthStr } })
         .then(res => { 
-            console.log(res.data); 
-        });
+            console.log(res.data)
+            return res.data;
+        })
+        .catch(err => {
+            if(err.response.status === 401) {
+                this.refreshToken();
+            }
+        })
+    },
+    convertDuration(ms) {
+        const minutes = Math.floor(ms / 60000);
+        const seconds = ((ms % 60000) / 1000).toFixed(0);
+        return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
     }
 } 

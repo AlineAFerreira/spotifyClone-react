@@ -2,6 +2,12 @@ import React, {useState, useEffect} from 'react';
 import LinesEllipsis from 'react-lines-ellipsis';
 import { spotifyHelper } from '../../helper/spotify';
 import { Container, Label, TextTerm, Results} from './styles';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
 const Home = () => {
   const [term, setTerm] = useState('');
@@ -16,8 +22,9 @@ const Home = () => {
 
   const listPlaylists = () => {
     if (typeof userPlaylists != "undefined" && userPlaylists.length > 0) {
-      return userPlaylists.map(item => 
-        <div key={item.id} className="item" onClick={()=> spotifyHelper.getPlaylistItem(item.id)}>
+      return userPlaylists.map(item =>         
+        <div key={item.id} className="item">
+          <Link to={`/Album/${item.id}`}>
           <div className="box-img"><img src={item.images[0].url}/></div>
           <span>
             <LinesEllipsis
@@ -29,6 +36,7 @@ const Home = () => {
             />
           </span>
           <span>de {item.owner.display_name}</span>
+          </Link>
         </div>
       )
       console.log('state', userPlaylists)

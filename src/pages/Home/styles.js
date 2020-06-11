@@ -48,6 +48,10 @@ export const Results = styled.div`
             }
         }
 
+        a {
+            text-decoration: none;
+        }
+
         .box-img {
             width: 150px;
             height: 150px;
@@ -62,6 +66,7 @@ export const Results = styled.div`
 
         span {
             display: block;
+            color: #fafafa;
 
             &:last-child {
                 color: #999;

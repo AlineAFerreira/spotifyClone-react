@@ -56,7 +56,7 @@ class App extends React.Component {
               <Route path="/Home" exact >
                 <Home />
               </Route>
-              <Route path="/Album" exact >
+              <Route path="/Album/:id" exact >
                 <Album />
               </Route>
             </Switch>
